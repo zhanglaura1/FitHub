@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 
 const EditPost = () => {
     const {id} = useParams();
-    const [post, setPost] = useState({name: "", likes: 0, description: "", tags: [], img: ""});
+    const [post, setPost] = useState({name: "", likes: 0, description: "", tags: [], img: "", comments: []});
 
     useEffect(() => {
         const fetchPost = async () => {

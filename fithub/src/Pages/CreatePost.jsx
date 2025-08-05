@@ -2,7 +2,7 @@ import { supabase } from '../client'
 import { useState } from 'react'
 
 const CreatePost = () => {
-    const [post, setPost] = useState({name: "", likes: 0, description: "", tags: [], img: ""});
+    const [post, setPost] = useState({name: "", likes: 0, description: "", tags: [], img: "", comments: []});
 
     const handleChange = (event) => {
         const { name, value, type, multiple, options, files } = event.target;        

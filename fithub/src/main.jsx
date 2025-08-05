@@ -9,9 +9,8 @@ createRoot(document.getElementById('root')).render(
     <Routes>
       <Route path="/" element={<Layout/>}>
         <Route index element={<App />}/>
-        <Route path="/profile" element={<Profile/>}/>
         <Route path="/new" element={<CreatePost/>}/>
-        <Route path="/feed/:user_name" element={<ReadPost/>}/>
+        <Route path="/profile" element={<ReadPost/>}/>
         <Route path="/edit/:id" element={<EditPost/>}/>
         <Route path="/detail/:id" element={<DetailView/>}/>
         <Route path="*"

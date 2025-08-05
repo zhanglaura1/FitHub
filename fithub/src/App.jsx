@@ -1,34 +1,32 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useState, useEffect } from 'react'
+import { supabase } from '../client'
+import Post from '../Components/Post'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [posts, setPosts] = useState([]);
+  useEffect(() => {
+          const fetchPosts = async () => {
+              const {data} = await supabase.from("Posts").select().order('created_at', {ascending: true})
+              setPosts(data);
+          }
+          fetchPosts();
+      }, [])
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div>
+      <h1>Welcome to Fithub</h1>
+      {posts && posts.length > 0 ? 
+          [...posts].sort((a,b) => b.id - a.id)
+          .map((data) => 
+              <Post key={data.id} id={data.id} user_name={data.user_name} creation_time={data.creation_time} description={data.descriptio} likes={data.likes} img={data.img} tags={data.tags} comments={data.comments}/>
+          )
+          : 
+          (
+          <div></div>
+          )
+      }
+    </div>
   )
 }
 
