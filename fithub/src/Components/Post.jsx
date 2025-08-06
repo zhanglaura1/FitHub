@@ -12,7 +12,7 @@ const Post = (props) => {
 
     return (
         <div className='post'>
-            <h4>@{props.user_name}(usernames not implemented yet)</h4>
+            <h4>@{props.user_name}(user name not implemented yet)</h4>
             <Link to={"../detail/" + props.id}>{imgUrl ? <img src={imgUrl} art="fit photo"/> : null}</Link>
             <div className="footer">
                 <h4>{props.creation_time}</h4>

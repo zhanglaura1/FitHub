@@ -43,7 +43,7 @@ const DetailView = () => {
         <div>
             <div className="main">
                 <div className="header">
-                    <h4>@{post.user_name}(usernames not implemented yet)</h4>
+                    <h4>@{props.user_name}(user name not implemented yet)</h4>
                     <Link to={"/edit" + post.id}><button>...</button></Link>
                 </div>
                 {imgUrl ? <img src={imgUrl} art="fit photo"/> : null}
@@ -73,3 +73,5 @@ const DetailView = () => {
         </div>
     )
 }
+
+export default DetailView
