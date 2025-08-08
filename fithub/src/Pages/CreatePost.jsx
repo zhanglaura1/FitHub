@@ -1,10 +1,11 @@
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { db, storage } from "../client.js";
+import { auth, db, storage } from "../client.js";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useState } from 'react';
 
 const CreatePost = () => {
-    const [post, setPost] = useState({user_name: "", likes: 0, description: "", tags: [], img: null, comments: []});
+    const user = auth.currentUser;
+    const [post, setPost] = useState({likes: [], description: "", tags: [], img: null});
 
     const handleChange = (event) => {
         const { name, value, type, multiple, options, files } = event.target;        
@@ -34,6 +35,7 @@ const CreatePost = () => {
         // Save post with image URL
         await addDoc(collection(db, "Posts"), {
             ...post,
+            userId: user.uid,
             img: imageUrl,
             created_at: serverTimestamp()
         });

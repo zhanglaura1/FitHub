@@ -20,6 +20,11 @@ body {
   line-height: 1.5;
 }
 
+nav {
+  display: flex;
+  gap: 10px;
+}
+
 /* Heading */
 h1 {
   text-align: center;
@@ -142,7 +147,7 @@ h1 {
 }
 
 /* Like Button */
-.like-btn {
+.liked-btn {
   background: none;
   border: none;
   font-size: 1.5rem;
@@ -151,7 +156,19 @@ h1 {
   transition: transform 0.1s ease;
 }
 
-.like-btn:hover {
+.liked-btn:hover {
+  transform: scale(1.2);
+}
+
+.unliked-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.unliked-btn:hover {
   transform: scale(1.2);
 }
 

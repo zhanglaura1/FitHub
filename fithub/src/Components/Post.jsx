@@ -1,29 +1,46 @@
 import { Link } from 'react-router-dom'
-import { db } from "../client.js";
-import {
-  doc,
-  updateDoc,
-  increment,
-} from "firebase/firestore";
+import { db, auth } from "../client.js";
+import { doc, updateDoc, arrayUnion, arrayRemove, onSnapshot } from "firebase/firestore";
+import { useState, useEffect } from 'react'
 
 const Post = (props) => {
     const imgUrl = props.img;
+    const [user_name, setUserName] = useState("");
+
+    useEffect(() => {
+        const userRef = doc(db, "Users", props.userId);
+        const unsubscribe = onSnapshot(userRef, (snapshot) => {
+            if (snapshot.exists()) {
+                setUserName(snapshot.data().name);
+            }
+        });
+        return () => unsubscribe();
+    }, [])
+    
     const handleLike = async () => {
         const postRef = doc(db, "Posts", props.id);
-        await updateDoc(postRef, {
-            likes: increment(1)
-        });
+        if (props.likes?.includes(auth.currentUser.uid)) {
+            await updateDoc(postRef, {
+                likes: arrayRemove(auth.currentUser.uid)
+            });
+        } else {
+            await updateDoc(postRef, {
+                likes: arrayUnion(auth.currentUser.uid)
+            });
+        }
     };
 
     return (
         <div className='post-card'>
-            <h4>@{props.user_name}(user name not implemented yet)</h4>
-            <Link to={"../detail/" + props.id}>{imgUrl ? <img src={imgUrl} art="fit photo"/> : null}</Link>
+            <h4>@{user_name}</h4>
+            <Link to={"../detail/" + props.id}>{imgUrl ? <img src={imgUrl} alt="fit photo"/> : null}</Link>
             <div className="footer">
-                <h4>{props.creation_time}</h4>
+                <h4>{props.created_at?.toDate().toLocaleString()}</h4>
                 <div className="likes">
-                    <button className="like-btn" onClick={handleLike}>♡</button>
-                    <h4>{props.likes}</h4>
+                    {props.likes?.includes(auth.currentUser.uid) ? 
+                        <button className="liked-btn" onClick={handleLike}>♥</button> : 
+                        <button className="unliked-btn" onClick={handleLike}>♡</button> }
+                    <h4>{props.likes?.length || 0}</h4>
                 </div>
             </div>
         </div>

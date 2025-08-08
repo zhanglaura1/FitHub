@@ -26,12 +26,11 @@ function App() {
           return {
             id: doc.id,
             // normalize fields so code below doesn't blow up if something is missing
-            name: data.name || "",
+            userId: data.userId || "",
             description: data.description || "",
-            likes: typeof data.likes === "number" ? data.likes : 0,
+            likes: Array.isArray(data.likes) ? data.likes : [],
             tags: Array.isArray(data.tags) ? data.tags : [],
             img: data.img || "",
-            comments: Array.isArray(data.comments) ? data.comments : [],
             created_at: data.created_at ? data.created_at.toDate?.() ?? data.created_at : null
           };
         });
@@ -50,9 +49,13 @@ function App() {
 
     // Filter by tags: require every selected tag to be present in post.tags
     if (tags.length > 0) {
-      filtered = filtered.filter((post) =>
-        tags.every((tag) => post.tags && post.tags.includes(tag))
-      );
+      if (tags.length === 1 && tags.includes("show-all")) {
+        filtered = posts;
+      } else {
+        filtered = filtered.filter((post) =>
+          tags.every((tag) => post.tags && post.tags.includes(tag))
+        );
+      }
     }
 
     // Filter by search input (search description and name)
@@ -60,14 +63,13 @@ function App() {
       const q = searchInput.toLowerCase();
       filtered = filtered.filter(
         (post) =>
-          (post.description && post.description.toLowerCase().includes(q)) ||
-          (post.name && post.name.toLowerCase().includes(q))
+          (post.description && post.description.toLowerCase().includes(q))
       );
     }
 
     // Sort: likes or recent
     if (sort === "likes") {
-      filtered = [...filtered].sort((a, b) => (b.likes || 0) - (a.likes || 0));
+      filtered = [...filtered].sort((a, b) => (b.likes.length) - (a.likes.length));
     } else {
       // recent: sort by created_at (newest first). If no created_at, keep original order.
       filtered = [...filtered].sort((a, b) => {
@@ -91,7 +93,7 @@ function App() {
         />
         <label htmlFor="tag_filter">Filter: </label>
         <select name="tag_filter" id="tag_filter" multiple onChange={(input => setTags(Array.from(input.target.options).filter(option => option.selected).map(option => option.value)))}>
-          <option value="" default></option>
+          <option value="show-all" default>Show All</option>
           <option value="streetwear">Streetwear</option>
           <option value="y2k">Y2K</option>
           <option value="vintage">Vintage</option>
@@ -122,7 +124,7 @@ function App() {
             <Post
               key={data.id}
               id={data.id}
-              user_name={data.user_name}
+              userId={data.userId}
               creation_time={data.creation_time}
               description={data.description}
               likes={data.likes}

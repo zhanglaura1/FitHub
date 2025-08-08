@@ -16,7 +16,7 @@ const EditPost = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
-    const [post, setPost] = useState({user_name: "", likes: 0, description: "", tags: [], img: null, comments: []});
+    const [post, setPost] = useState({userID: 0, user_name: "", likes: 0, description: "", tags: [], img: null});
 
     useEffect(() => {
         const fetchPost = async () => {

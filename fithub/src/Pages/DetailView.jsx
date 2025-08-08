@@ -1,13 +1,8 @@
 import { useParams } from "react-router-dom"
 import { useState, useEffect } from 'react'
-import { db } from "../client.js";
-import {
-  doc,
-  getDoc,
-  updateDoc,
-  arrayUnion,
-  increment,
-  onSnapshot
+import { db, auth } from "../client.js";
+import { doc, updateDoc, addDoc, serverTimestamp, arrayUnion,
+  arrayRemove, onSnapshot, query, collection, where, orderBy
 } from "firebase/firestore";
 import { Link } from 'react-router-dom'
 
@@ -15,6 +10,8 @@ const DetailView = () => {
     const { id } = useParams();
     const [post, setPost] = useState(null);
     const [newComment, setNewComment] = useState("");
+    const [comments, setComments] = useState([]);
+    const [user_name, setUserName] = useState("");
 
     useEffect(() => {
         const postRef = doc(db, "Posts", id);
@@ -26,19 +23,47 @@ const DetailView = () => {
         return () => unsubscribe();
     }, [id])
 
+    useEffect(() => {
+        const q = query(collection(db, "Comments"), where("postId", "==", id), orderBy("created_at", "asc"));
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+            setComments(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        });
+        return () => unsubscribe();
+    }, [id])
+
+    useEffect(() => {
+        const userRef = doc(db, "Users", auth.currentUser.uid);
+        const unsubscribe = onSnapshot(userRef, (snapshot) => {
+            if (snapshot.exists()) {
+                setUserName(snapshot.data().name);
+            }
+        });
+        return () => unsubscribe();
+    }, [id])
+
     const handleLike = async () => {
         const postRef = doc(db, "Posts", id);
-        await updateDoc(postRef, {
-            likes: increment(1)
-        });
+        if (post.likes?.includes(auth.currentUser.uid)) {
+            await updateDoc(postRef, {
+                likes: arrayRemove(auth.currentUser.uid)
+            });
+        } else {
+            await updateDoc(postRef, {
+                likes: arrayUnion(auth.currentUser.uid)
+            });
+        }
     };
 
     const handleAddComment = async () => {
         if (!newComment.trim()) return;
 
         const postRef = doc(db, "Posts", id);
-        await updateDoc(postRef, {
-            comments: arrayUnion(newComment.trim())
+        await addDoc(collection(db, "Comments"), {
+            postId: id,
+            userId: auth.currentUser.uid,
+            userName: user_name,
+            text: newComment.trim(),
+            created_at: serverTimestamp(),
         });
 
         setNewComment(""); // clear input
@@ -50,16 +75,19 @@ const DetailView = () => {
         <div>
             <div className="post-card">
                 <div className="header">
-                    <h4>@{post.user_name}(user name not implemented yet)</h4>
-                    <Link to={"/edit/" + id}><button>...</button></Link>
+                    <h4>@{user_name}</h4>
+                    {auth.currentUser?.uid === post.userId ? 
+                        <Link to={"/edit/" + id}>...</Link> : null}
                 </div>
                 {post.img && <img src={post.img} alt="Post" style={{ width: "300px" }} />}
                 <p>{post.description}</p>
                 <div className="footer">
-                    <h4>{post.creation_time}</h4>
+                    <h4>{post.created_at?.toDate().toLocaleString()}</h4>
                     <div className="likes">
-                        <button className="like-btn" onClick={handleLike}>♡</button>
-                        <h4>{post.likes || 0}</h4>
+                        {post.likes?.includes(auth.currentUser.uid) ? 
+                            <button className="liked-btn" onClick={handleLike}>♥</button> : 
+                            <button className="unliked-btn" onClick={handleLike}>♡</button> }
+                        <h4>{post.likes?.length}</h4>
                     </div>
                 </div>
                 <div className="tags">
@@ -69,9 +97,14 @@ const DetailView = () => {
                 </div>
             </div>
             <div className="comments">
-                {post.comments.map((comment) => (
-                    <h4>{comment}</h4>
-                ))}
+                {comments ? comments
+                    .map((comment) => (
+                    <div className="comment">
+                        <h4 className="comment-user">@{comment.userName}</h4>
+                        <h4>{comment.created_at?.toDate().toLocaleString()}</h4>
+                        <h4>{comment.text}</h4>
+                    </div>
+                )) : null}
                 <div className="makeComment">
                     <input type="text" name="comment" placeholder="Add a comment" value={newComment} onChange={(e) => setNewComment(e.target.value)}/>
                     <button onClick={handleAddComment}>Send</button>
