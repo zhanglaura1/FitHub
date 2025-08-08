@@ -14,6 +14,7 @@ import { Link } from 'react-router-dom'
 const DetailView = () => {
     const { id } = useParams();
     const [post, setPost] = useState(null);
+    const [newComment, setNewComment] = useState("");
 
     useEffect(() => {
         const postRef = doc(db, "Posts", id);
@@ -49,8 +50,8 @@ const DetailView = () => {
         <div>
             <div className="post-card">
                 <div className="header">
-                    <h4>@{props.user_name}(user name not implemented yet)</h4>
-                    <Link to={"/edit" + post.id}><button>...</button></Link>
+                    <h4>@{post.user_name}(user name not implemented yet)</h4>
+                    <Link to={"/edit/" + id}><button>...</button></Link>
                 </div>
                 {post.img && <img src={post.img} alt="Post" style={{ width: "300px" }} />}
                 <p>{post.description}</p>

@@ -1,23 +1,22 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { db, storage } from "../client.js";
+import ConfirmDelete from '../Components/ConfirmDelete.jsx';
 import {
   doc,
   getDoc,
   updateDoc,
   deleteDoc
 } from "firebase/firestore";
-import {
-  ref,
-  uploadBytes,
-  getDownloadURL,
-  deleteObject
-} from "firebase/storage";
+import { ref, deleteObject } from "firebase/storage";
 
 const EditPost = () => {
     const {id} = useParams();
     const navigate = useNavigate();
-    const [post, setPost] = useState({user_name: "", likes: 0, description: "", tags: [], img: "", comments: []});
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const openModal = () => setIsModalOpen(true);
+    const closeModal = () => setIsModalOpen(false);
+    const [post, setPost] = useState({user_name: "", likes: 0, description: "", tags: [], img: null, comments: []});
 
     useEffect(() => {
         const fetchPost = async () => {
@@ -38,28 +37,24 @@ const EditPost = () => {
     }, [id, navigate]);
 
     const handleChange = (event) => {
-        const { name, value, type, multiple, options, files } = event.target;        
+        const { name, value, multiple, options } = event.target;        
         setPost((prev) => {
-            if (type === "file") {
-                setNewImageFile(files[0]);   
-            }
             if (multiple) {
                 const values = Array.from(options).filter(option => option.selected).map(option => option.value);
-                setPost((prev) => ({ ...prev, [name]: values }));
-                return;
+                return { ...prev, [name]: values };
             }
-            setPost((prev) => ({ ...prev, [name]: value }));
+            return { ...prev, [name]: value };
         });
     };
 
     const updatePost = async (event) => {
+        event.preventDefault();
         const postRef = doc(db, "Posts", id);
         await updateDoc(postRef, { ...post });
         navigate("/profile");
     }
 
     const deletePost = async (event) => {
-        event.preventDefault();
         try {
             if (post.img) {
                 try {
@@ -75,14 +70,13 @@ const EditPost = () => {
         } catch (err) {
             console.error("Unexpected error:", err);
         }
-        window.location = "/profile";
     }
 
     return (
         <div>
             <h1>Edit post</h1>
             <form onSubmit={updatePost}>
-                <img src={post.img} alt="fit photo" />
+                {post?.img ? <img src={post.img} art="fit photo"/> : null}
                 <br />
                 <label htmlFor="description">Description: </label>
                 <textarea id="description" name="description" rows="5" cols="50" value={post.description} onChange={handleChange} required>
@@ -112,12 +106,8 @@ const EditPost = () => {
                 </select>
                 <br />
                 <button type="submit" className="update">Update</button>
-                <button className="delete" onClick={dialog.showModal()}>Delete</button>
-                <dialog>
-                    <p>Are you sure you want to delete this post?</p>
-                    <button className="delete" onClick={deletePost}>Delete</button>
-                    <button className="cancel" onClick={dialog.close()}>Cancel</button>
-                </dialog>
+                <button type="button" className="delete" onClick={openModal}>Delete</button>
+                <ConfirmDelete isOpen={isModalOpen} onClose={closeModal} deletePost={deletePost}/>
             </form>
         </div>
     )
