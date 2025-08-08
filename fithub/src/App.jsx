@@ -1,7 +1,13 @@
 import { useState, useEffect } from 'react'
-import { supabase } from './client'
+import { db } from "./client.js";
 import Post from './Components/Post'
 import './App.css'
+import {
+  collection,
+  query,
+  orderBy,
+  onSnapshot
+} from "firebase/firestore";
 
 function App() {
   const [posts, setPosts] = useState([]);
@@ -11,32 +17,68 @@ function App() {
   const [tags, setTags] = useState([]);
 
   useEffect(() => {
-    const fetchAllPosts = async () => {
-        const {data} = await supabase.from("Posts").select().order('created_at', {ascending: true})
-        setPosts(data);
-    }
-    fetchAllPosts();
+    const q = query(collection(db, "Posts"), orderBy("created_at", "desc"));
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        const docs = snapshot.docs.map((doc) => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            // normalize fields so code below doesn't blow up if something is missing
+            name: data.name || "",
+            description: data.description || "",
+            likes: typeof data.likes === "number" ? data.likes : 0,
+            tags: Array.isArray(data.tags) ? data.tags : [],
+            img: data.img || "",
+            comments: Array.isArray(data.comments) ? data.comments : [],
+            created_at: data.created_at ? data.created_at.toDate?.() ?? data.created_at : null
+          };
+        });
+        setPosts(docs);
+      },
+      (error) => {
+        console.error("Error listening to posts:", error);
+      }
+    );
+
+    return () => unsubscribe();
   }, [])
 
   useEffect(() => {
-    const filterItems = () => {
-      let filteredData = [...posts];
-      if (tags.length > 0) {
-        filteredData = filteredData.filter(post =>
-                tags.every(tag => post.tags && post.tags.includes(tag)));     
-      }
-      if (searchInput.trim() !== "") {
-        filteredData = filteredData.filter((post) => post.description.toLowerCase().includes(searchInput.toLowerCase()));
-      }
-      setFilteredResults(filteredData);
-    }
-    filterItems();
-  }, [tags, searchInput, posts])
+    let filtered = posts;
 
-  const sortedResults = [...filteredResults].sort((a,b) => {
-    if (sort === "likes") return b.likes - a.likes;
-    return new Date(b.created_at) - new Date(a.created_at);
-  });
+    // Filter by tags: require every selected tag to be present in post.tags
+    if (tags.length > 0) {
+      filtered = filtered.filter((post) =>
+        tags.every((tag) => post.tags && post.tags.includes(tag))
+      );
+    }
+
+    // Filter by search input (search description and name)
+    if (searchInput.trim() !== "") {
+      const q = searchInput.toLowerCase();
+      filtered = filtered.filter(
+        (post) =>
+          (post.description && post.description.toLowerCase().includes(q)) ||
+          (post.name && post.name.toLowerCase().includes(q))
+      );
+    }
+
+    // Sort: likes or recent
+    if (sort === "likes") {
+      filtered = [...filtered].sort((a, b) => (b.likes || 0) - (a.likes || 0));
+    } else {
+      // recent: sort by created_at (newest first). If no created_at, keep original order.
+      filtered = [...filtered].sort((a, b) => {
+        const ta = a.created_at ? new Date(a.created_at).getTime() : 0;
+        const tb = b.created_at ? new Date(b.created_at).getTime() : 0;
+        return tb - ta;
+      });
+    }
+
+    setFilteredResults(filtered);
+  }, [tags, searchInput, posts, sort])
 
   return (
     <div>
@@ -50,23 +92,23 @@ function App() {
         <label htmlFor="tag_filter">Filter: </label>
         <select name="tag_filter" id="tag_filter" multiple onChange={(input => setTags(Array.from(input.target.options).filter(option => option.selected).map(option => option.value)))}>
           <option value="" default></option>
-            <option value="streetwear">Streetwear</option>
-            <option value="y2k">Y2K</option>
-            <option value="vintage">Vintage</option>
-            <option value="cottagecore">Cottagecore</option>
-            <option value="emo">Emo</option>
-            <option value="coquette">Coquette</option>
-            <option value="indie">Indie</option>
-            <option value="minimalist">Minimalist</option>
-            <option value="granola">Granola</option>
-            <option value="monochrome">Monochrome</option>
-            <option value="chic">Chic</option>
-            <option value="basic">Basic</option>
-            <option value="academia">Academia</option>
-            <option value="formal">Formal</option>
-            <option value="business-cas">Business Casual</option>
-            <option value="western">Western</option>
-            <option value="coastal">Coastal</option>
+          <option value="streetwear">Streetwear</option>
+          <option value="y2k">Y2K</option>
+          <option value="vintage">Vintage</option>
+          <option value="cottagecore">Cottagecore</option>
+          <option value="emo">Emo</option>
+          <option value="coquette">Coquette</option>
+          <option value="indie">Indie</option>
+          <option value="minimalist">Minimalist</option>
+          <option value="granola">Granola</option>
+          <option value="monochrome">Monochrome</option>
+          <option value="chic">Chic</option>
+          <option value="basic">Basic</option>
+          <option value="academia">Academia</option>
+          <option value="formal">Formal</option>
+          <option value="business-cas">Business Casual</option>
+          <option value="western">Western</option>
+          <option value="coastal">Coastal</option>
         </select>
         <label htmlFor="sort">Sort by: </label>
         <select name="sort" id="sort" value={sort} onChange={(input => setSort(input.target.value))}>
@@ -74,24 +116,26 @@ function App() {
           <option value="likes">Likes</option>
         </select>
       </div>
-      {posts && posts.length > 0 ? 
-          (sortedResults.map((data) => (
-          <Post
-            key={data.id}
-            id={data.id}
-            user_name={data.user_name}
-            creation_time={data.creation_time}
-            description={data.description}
-            likes={data.likes}
-            img={data.img}
-            tags={data.tags}
-            comments={data.comments}
-          />)))
-          : 
-          (
-          <div></div>
-          )
-      }
+      <div className="posts-container">
+        {filteredResults.length > 0 > 0 ? 
+            (filteredResults.map((data) => (
+            <Post
+              key={data.id}
+              id={data.id}
+              user_name={data.user_name}
+              creation_time={data.creation_time}
+              description={data.description}
+              likes={data.likes}
+              img={data.img}
+              tags={data.tags}
+              comments={data.comments}
+            />)))
+            : 
+            (
+            <div>No posts found.</div>
+            )
+        }
+      </div>
     </div>
   )
 }

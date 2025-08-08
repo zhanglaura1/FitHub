@@ -1,8 +1,10 @@
-import { supabase } from '../client'
-import { useState } from 'react'
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { db, storage } from "../client.js";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { useState } from 'react';
 
 const CreatePost = () => {
-    const [post, setPost] = useState({name: "", likes: 0, description: "", tags: [], img: "", comments: []});
+    const [post, setPost] = useState({user_name: "", likes: 0, description: "", tags: [], img: null, comments: []});
 
     const handleChange = (event) => {
         const { name, value, type, multiple, options, files } = event.target;        
@@ -24,28 +26,18 @@ const CreatePost = () => {
         
         // Upload image if file exists
         if (post.img instanceof File) {
-            const fileExt = post.img.name.split('.').pop();
-            const fileName = `${Date.now()}.${fileExt}`;
-            const { data, error } = await supabase
-                .storage
-                .from('images')
-                .upload(fileName, post.img);
-
-            if (error) {
-                console.error("Error uploading image:", error);
-                return;
-            }
-            // Get public URL
-            const { data: publicUrlData } = supabase
-                .storage
-                .from('images')
-                .getPublicUrl(fileName);
-
-            imageUrl = publicUrlData.publicUrl;
+            const fileRef = ref(storage, `images/${Date.now()}-${post.img.name}`);
+            await uploadBytes(fileRef, post.img);
+            imageUrl = await getDownloadURL(fileRef);
         }
 
         // Save post with image URL
-        await supabase.from('Posts').insert({ ...post, img: imageUrl });
+        await addDoc(collection(db, "Posts"), {
+            ...post,
+            img: imageUrl,
+            created_at: serverTimestamp()
+        });
+
         window.location = "/profile";
     }
 

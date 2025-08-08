@@ -1,65 +1,71 @@
 import { useParams } from "react-router-dom"
 import { useState, useEffect } from 'react'
-import { supabase } from '../client'
+import { db } from "../client.js";
+import {
+  doc,
+  getDoc,
+  updateDoc,
+  arrayUnion,
+  increment,
+  onSnapshot
+} from "firebase/firestore";
 import { Link } from 'react-router-dom'
 
 const DetailView = () => {
     const { id } = useParams();
-
     const [post, setPost] = useState(null);
+
     useEffect(() => {
-        const fetchPosts = async () => {
-            const {data} = await supabase.from("Posts").select().eq('id', id);
-            SetPost(data[0]);
+        const postRef = doc(db, "Posts", id);
+        const unsubscribe = onSnapshot(postRef, (snapshot) => {
+        if (snapshot.exists()) {
+            setPost(snapshot.data());
         }
-        fetchPosts();
+        });
+        return () => unsubscribe();
     }, [id])
 
-    const [count, setCount] = useState(post.likes);
-    const updateCount = async (event) => {
-        event.preventDefault();
-        await supabase.from("Posts").update({likes: count + 1}).eq('id', post.id);
-        setCount((count) => count + 1);
-        window.location = "/";
-    }
+    const handleLike = async () => {
+        const postRef = doc(db, "Posts", id);
+        await updateDoc(postRef, {
+            likes: increment(1)
+        });
+    };
 
-    const [newComment, setNewComment] = useState("");
-    const addComment = async (event) => {
-        if (!newComment.trim()) return; // Prevent empty comments
+    const handleAddComment = async () => {
+        if (!newComment.trim()) return;
 
-        const updatedComments = [...(post.comments || []), newComment];
-        await supabase.from("Posts").update({ comments: updatedComments }).eq('id', post.id);
+        const postRef = doc(db, "Posts", id);
+        await updateDoc(postRef, {
+            comments: arrayUnion(newComment.trim())
+        });
 
-        setPost((prev) => ({
-            ...prev,
-            comments: updatedComments
-        }));
-        setNewComment("");
-    }
+        setNewComment(""); // clear input
+    };
 
-    const imgUrl = post ? post.img : null;
+    if (!post) return <p>Loading...</p>;
 
     return (
         <div>
-            <div className="main">
+            <div className="post-card">
                 <div className="header">
                     <h4>@{props.user_name}(user name not implemented yet)</h4>
                     <Link to={"/edit" + post.id}><button>...</button></Link>
                 </div>
-                {imgUrl ? <img src={imgUrl} art="fit photo"/> : null}
+                {post.img && <img src={post.img} alt="Post" style={{ width: "300px" }} />}
                 <p>{post.description}</p>
                 <div className="footer">
                     <h4>{post.creation_time}</h4>
                     <div className="likes">
-                        <button className="like-btn" onClick={updateCount}>♡</button>
-                        <h4>{post.likes}</h4>
+                        <button className="like-btn" onClick={handleLike}>♡</button>
+                        <h4>{post.likes || 0}</h4>
                     </div>
                 </div>
-                <span>
+                <div className="tags">
                     {post.tags.map((tag) => (
-                        <h6 key={tag} id={tag}>{tag}</h6>
+                        <h6 key={tag} id={tag} className="tag">{tag}</h6>
                     ))}
-                </span>
+                </div>
             </div>
             <div className="comments">
                 {post.comments.map((comment) => (
@@ -67,7 +73,7 @@ const DetailView = () => {
                 ))}
                 <div className="makeComment">
                     <input type="text" name="comment" placeholder="Add a comment" value={newComment} onChange={(e) => setNewComment(e.target.value)}/>
-                    <button onClick={addComment}>Send</button>
+                    <button onClick={handleAddComment}>Send</button>
                 </div>
             </div>
         </div>
