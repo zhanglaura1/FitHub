@@ -12,6 +12,7 @@ const DetailView = () => {
     const [newComment, setNewComment] = useState("");
     const [comments, setComments] = useState([]);
     const [user_name, setUserName] = useState("");
+    const [curr_user, setCurrUserName] = useState("");
 
     useEffect(() => {
         const postRef = doc(db, "Posts", id);
@@ -32,14 +33,25 @@ const DetailView = () => {
     }, [id])
 
     useEffect(() => {
-        const userRef = doc(db, "Users", auth.currentUser.uid);
+        if (!post) return;
+        const userRef = doc(db, "Users", post.userId);
         const unsubscribe = onSnapshot(userRef, (snapshot) => {
             if (snapshot.exists()) {
                 setUserName(snapshot.data().name);
             }
         });
         return () => unsubscribe();
-    }, [id])
+    }, [id, post])
+
+    useEffect(() => {
+        const currUserRef = doc(db, "Users", auth.currentUser.uid);
+        const currUnsubscribe = onSnapshot(currUserRef, (snapshot) => {
+            if (snapshot.exists()) {
+                setCurrUserName(snapshot.data().name);
+            }
+        });
+        return () => currUnsubscribe();
+    }, []);
 
     const handleLike = async () => {
         const postRef = doc(db, "Posts", id);
@@ -61,7 +73,7 @@ const DetailView = () => {
         await addDoc(collection(db, "Comments"), {
             postId: id,
             userId: auth.currentUser.uid,
-            userName: user_name,
+            userName: curr_user,
             text: newComment.trim(),
             created_at: serverTimestamp(),
         });
