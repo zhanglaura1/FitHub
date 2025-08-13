@@ -10,6 +10,7 @@ import ReadPost from './Pages/ReadPost.jsx'
 import DetailView from './Pages/DetailView.jsx'
 import SignUp from './Pages/SignUp'
 import SignIn from './Pages/SignIn'
+import VisitProfile from './Pages/VisitProfile'
 import ProtectedRoute from './Components/ProtectedRoute.jsx'
 
 createRoot(document.getElementById('root')).render(
@@ -24,6 +25,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="/profile" element={<ProtectedRoute><ReadPost/></ProtectedRoute>}/>
           <Route path="/edit/:id" element={<ProtectedRoute><EditPost/></ProtectedRoute>}/>
           <Route path="/detail/:id" element={<ProtectedRoute><DetailView/></ProtectedRoute>}/>
+          <Route path="/visit-prof/:userId"element={<ProtectedRoute><VisitProfile/></ProtectedRoute>}/>
           <Route path="*"
                 element={
                   <main>

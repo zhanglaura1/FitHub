@@ -19,7 +19,10 @@ const SignUp = () => {
         }
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
-        await setDoc(doc(db, "Users", user.uid), {name, email, created_at: serverTimestamp()});
+        const saved = [];
+        const following = [];
+        const followers = [];
+        await setDoc(doc(db, "Users", user.uid), {name, email, saved, following, followers, created_at: serverTimestamp()});
         navigate("/");
     }
 

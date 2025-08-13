@@ -12,21 +12,22 @@ import {
 
 const ReadPost = () => {
     const [posts, setPosts] = useState([]);
-    const [user_name, setUserName] = useState("");
+    const [user, setUser] = useState("");
+    const [showSaved, setShowSaved] = useState(false);
 
     useEffect(() => {
       if (!auth.currentUser) return;
       const userRef = doc(db, "Users", auth.currentUser.uid);
       const unsubscribe = onSnapshot(userRef, (snapshot) => {
           if (snapshot.exists()) {
-              setUserName(snapshot.data().name);
+              setUser(snapshot.data());
           }
       });
       return () => unsubscribe();
     }, [])
 
     useEffect(() => {
-      if (!auth.currentUser) return;
+      if (!auth.currentUser || showSaved) return;
       const q = query(collection(db, "Posts"), where("userId", "==", auth.currentUser.uid), orderBy("created_at", "desc"));
       const unsubscribe = onSnapshot(
         q,
@@ -52,13 +53,36 @@ const ReadPost = () => {
       );
   
       return () => unsubscribe();
-    }, [])
+    }, [showSaved])
+
+    useEffect(() => {
+      if (!auth.currentUser || !showSaved || !user.saved?.length) return;
+      const q = query(
+        collection(db, "Posts"),
+        where("__name__", "in", user.saved)
+      );
+      const unsubscribe = onSnapshot(q, (snapshot) => {
+        const docs = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          likes: Array.isArray(doc.data().likes) ? doc.data().likes : [],
+          tags: Array.isArray(doc.data().tags) ? doc.data().tags : [],
+          created_at: doc.data().created_at?.toDate?.() ?? null
+        }));
+        setPosts(docs);
+      });
+      return () => unsubscribe();
+    }, [showSaved, user.saved]);
 
     return (
+      <div>
+        <h2>@{user.name}</h2>
+        <h3>Following: {user.following?.length}</h3>
+        <h3>Followers: {user.followers?.length}</h3>
+        <button onClick={() => setShowSaved(false)}>My posts</button>
+        <button onClick={() => setShowSaved(true)}>Saved</button>
         <div className="posts-container">
-            <h2>@{user_name}</h2>
-            <h3>My posts</h3>
-            {posts && posts.length > 0 ? 
+            {posts?.length > 0 ? 
                 [...posts]
                 .map((data) => 
                     <Post key={data.id} id={data.id} userId={data.userId} creation_time={data.created_at} description={data.description} likes={data.likes} img={data.img} tags={data.tags} comments={data.comments}/>
@@ -69,6 +93,7 @@ const ReadPost = () => {
                 )
             }
         </div>
+      </div>
     )
 }
 

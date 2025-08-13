@@ -32,7 +32,7 @@ const Post = (props) => {
 
     return (
         <div className='post-card'>
-            <h4>@{user_name}</h4>
+            <Link to={"/visit-prof/" + props.userId}>@{user_name}</Link>
             <Link to={"../detail/" + props.id}>{imgUrl ? <img src={imgUrl} alt="fit photo"/> : null}</Link>
             <div className="footer">
                 <h4>{props.created_at?.toDate().toLocaleString()}</h4>

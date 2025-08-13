@@ -12,7 +12,7 @@ const DetailView = () => {
     const [newComment, setNewComment] = useState("");
     const [comments, setComments] = useState([]);
     const [user_name, setUserName] = useState("");
-    const [curr_user, setCurrUserName] = useState("");
+    const [curr_user, setCurrUser] = useState(null);
 
     useEffect(() => {
         const postRef = doc(db, "Posts", id);
@@ -47,7 +47,7 @@ const DetailView = () => {
         const currUserRef = doc(db, "Users", auth.currentUser.uid);
         const currUnsubscribe = onSnapshot(currUserRef, (snapshot) => {
             if (snapshot.exists()) {
-                setCurrUserName(snapshot.data().name);
+                setCurrUser(snapshot.data());
             }
         });
         return () => currUnsubscribe();
@@ -66,18 +66,29 @@ const DetailView = () => {
         }
     };
 
+    const handleSave = async () => {
+        const userRef = doc(db, "Users", auth.currentUser.uid);
+        if (curr_user.saved?.includes(id)) {
+            await updateDoc(userRef, {
+                saved: arrayRemove(id)
+            });
+        } else {
+            await updateDoc(userRef, {
+                saved: arrayUnion(id)
+            });
+        }
+    };
+
     const handleAddComment = async () => {
         if (!newComment.trim()) return;
-
         const postRef = doc(db, "Posts", id);
         await addDoc(collection(db, "Comments"), {
             postId: id,
             userId: auth.currentUser.uid,
-            userName: curr_user,
+            userName: curr_user.name,
             text: newComment.trim(),
             created_at: serverTimestamp(),
         });
-
         setNewComment(""); // clear input
     };
 
@@ -87,7 +98,7 @@ const DetailView = () => {
         <div>
             <div className="post-card">
                 <div className="header">
-                    <h4>@{user_name}</h4>
+                    <Link to={"/visit-prof/" + post.userId}>@{user_name}</Link>
                     {auth.currentUser?.uid === post.userId ? 
                         <Link to={"/edit/" + id}>...</Link> : null}
                 </div>
@@ -100,6 +111,17 @@ const DetailView = () => {
                             <button className="liked-btn" onClick={handleLike}>♥</button> : 
                             <button className="unliked-btn" onClick={handleLike}>♡</button> }
                         <h4>{post.likes?.length}</h4>
+                    </div>
+                    <div className="save">
+                        {curr_user.saved?.includes(id) ? 
+                            <button className="saved-btn" onClick={handleSave}><svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
+                                </svg>
+                            </button> : 
+                            <button className="unsaved-btn" onClick={handleSave}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
+                                </svg>
+                            </button> }
                     </div>
                 </div>
                 <div className="tags">
