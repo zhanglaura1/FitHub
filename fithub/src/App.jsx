@@ -125,7 +125,7 @@ function App() {
               key={data.id}
               id={data.id}
               userId={data.userId}
-              creation_time={data.creation_time}
+              created_at={data.created_at}
               description={data.description}
               likes={data.likes}
               img={data.img}

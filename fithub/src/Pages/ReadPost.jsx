@@ -36,7 +36,6 @@ const ReadPost = () => {
             const data = doc.data();
             return {
               id: doc.id,
-              // normalize fields so code below doesn't blow up if something is missing
               userId: data.userId || "",
               description: data.description || "",
               likes: Array.isArray(data.likes) ? data.likes : [],
@@ -85,7 +84,7 @@ const ReadPost = () => {
             {posts?.length > 0 ? 
                 [...posts]
                 .map((data) => 
-                    <Post key={data.id} id={data.id} userId={data.userId} creation_time={data.created_at} description={data.description} likes={data.likes} img={data.img} tags={data.tags} comments={data.comments}/>
+                    <Post key={data.id} id={data.id} userId={data.userId} created_at={data.created_at} description={data.description} likes={data.likes} img={data.img} tags={data.tags} comments={data.comments}/>
                 )
                 : 
                 (

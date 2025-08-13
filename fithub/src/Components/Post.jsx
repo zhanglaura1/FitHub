@@ -35,7 +35,7 @@ const Post = (props) => {
             <Link to={"/visit-prof/" + props.userId}>@{user_name}</Link>
             <Link to={"../detail/" + props.id}>{imgUrl ? <img src={imgUrl} alt="fit photo"/> : null}</Link>
             <div className="footer">
-                <h4>{props.created_at?.toDate().toLocaleString()}</h4>
+                <h4>{props.created_at?.toLocaleString()}</h4>
                 <div className="likes">
                     {props.likes?.includes(auth.currentUser.uid) ? 
                         <button className="liked-btn" onClick={handleLike}>♥</button> : 
