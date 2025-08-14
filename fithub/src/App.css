@@ -196,6 +196,10 @@ h1 {
   cursor: pointer;
 }
 
+button:hover {
+  cursor: pointer;
+}
+
 /* Responsive Tweaks */
 @media (max-width: 600px) {
   .filters_sort {

@@ -1,6 +1,7 @@
 import { db, auth } from "../client.js";
 import { useState, useEffect } from 'react'
 import Post from '../Components/Post'
+import ShowFollow from '../Components/ShowFollow'
 import {
   collection,
   doc,
@@ -14,6 +15,7 @@ const ReadPost = () => {
     const [posts, setPosts] = useState([]);
     const [user, setUser] = useState("");
     const [showSaved, setShowSaved] = useState(false);
+    const [modalList, setModalList] = useState(null);
 
     useEffect(() => {
       if (!auth.currentUser) return;
@@ -58,7 +60,7 @@ const ReadPost = () => {
       if (!auth.currentUser || !showSaved || !user.saved?.length) return;
       const q = query(
         collection(db, "Posts"),
-        where("__name__", "in", user.saved)
+        where("__name__", "in", user.saved.slice(0,10))
       );
       const unsubscribe = onSnapshot(q, (snapshot) => {
         const docs = snapshot.docs.map((doc) => ({
@@ -75,9 +77,10 @@ const ReadPost = () => {
 
     return (
       <div>
-        <h2>@{user.name}</h2>
-        <h3>Following: {user.following?.length}</h3>
-        <h3>Followers: {user.followers?.length}</h3>
+        <h2>@{user?.name}</h2>
+        <button onClick={() => setModalList("following")}>Following: {user.following?.length}</button>
+        <button onClick={() => setModalList("followers")}>Followers: {user.followers?.length}</button>
+        <ShowFollow isOpen={!!modalList} onClose={() => setModalList(null)} list={modalList} currUser={user.name}/>
         <button onClick={() => setShowSaved(false)}>My posts</button>
         <button onClick={() => setShowSaved(true)}>Saved</button>
         <div className="posts-container">

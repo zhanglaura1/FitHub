@@ -58,10 +58,10 @@ const EditPost = () => {
         try {
             if (post.img) {
                 try {
-                const imageRef = ref(storage, decodeURIComponent(new URL(post.img).pathname.slice(1)));
-                await deleteObject(imageRef);
+                    const imageRef = ref(storage, decodeURIComponent(new URL(post.img).pathname.slice(1)));
+                    await deleteObject(imageRef);
                 } catch (err) {
-                console.warn("Image already deleted or not found:", err);
+                    console.warn("Image already deleted or not found:", err);
                 }
             }
             const postRef = doc(db, "Posts", id);

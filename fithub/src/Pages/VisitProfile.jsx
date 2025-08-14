@@ -18,12 +18,23 @@ const VisitProfile = () => {
     const { userId } = useParams();
     const [posts, setPosts] = useState([]);
     const [user, setUser] = useState(null);
+    const [currUser, setCurrUser] = useState(null);
 
     useEffect(() => {
       const userRef = doc(db, "Users", userId);
       const unsubscribe = onSnapshot(userRef, (snapshot) => {
           if (snapshot.exists()) {
               setUser(snapshot.data());
+          }
+      });
+      return () => unsubscribe();
+    }, [])
+
+    useEffect(() => {
+      const userRef = doc(db, "Users", auth.currentUser.uid);
+      const unsubscribe = onSnapshot(userRef, (snapshot) => {
+          if (snapshot.exists()) {
+              setCurrUser({ uid: snapshot.id, ...snapshot.data() });
           }
       });
       return () => unsubscribe();
@@ -59,14 +70,17 @@ const VisitProfile = () => {
 
     const handleFollow = async () => {
         const userRef = doc(db, "Users", userId);
-        if (user.followers?.includes(auth.currentUser.uid)) {
+        const currUserRef = doc(db, "Users", auth.currentUser.uid);
+        if (user.followers?.includes(currUser?.uid)) {
             await updateDoc(userRef, {
-                followers: arrayRemove(auth.currentUser.uid)
+                followers: arrayRemove(currUser?.uid)
             });
+            await updateDoc(currUserRef, {following: arrayRemove(userId)});
         } else {
             await updateDoc(userRef, {
-                followers: arrayUnion(auth.currentUser.uid)
+                followers: arrayUnion(currUser?.uid)
             });
+            await updateDoc(currUserRef, {following: arrayUnion(userId)});
         }
     };
 
@@ -77,7 +91,7 @@ const VisitProfile = () => {
                 <h3>Following: {user?.following?.length}</h3>
                 <h3>Followers: {user?.followers?.length}</h3>
             </div>
-            <button className="follow" onClick={handleFollow}>Follow</button>
+            {userId === auth.currentUser.uid ? null : <button className="follow" onClick={handleFollow}>Follow</button>}
             <div className="posts-container">
                 {posts?.length > 0 ? 
                     [...posts]
