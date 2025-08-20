@@ -83,7 +83,7 @@ const ReadPost = () => {
         <ShowFollow isOpen={!!modalList} onClose={() => setModalList(null)} list={modalList} currUser={user.name}/>
         <button onClick={() => setShowSaved(false)}>My posts</button>
         <button onClick={() => setShowSaved(true)}>Saved</button>
-        <div className="posts-container">
+        <div className="grid grid-flow-col grid-cols-3 gap-4">
             {posts?.length > 0 ? 
                 [...posts]
                 .map((data) => 

@@ -15,12 +15,12 @@ function Layout() {
     }
 
     return (
-        <div>
-            <nav>
+        <div className="max-width-1280px">
+            <nav className="flex gap-x-10">
                 <Link to="/">Feed</Link>
                 <Link to="/profile">Profile</Link>
                 <Link to="/new">New Post</Link>
-                <button onClick={handleLogout}>Log out</button>
+                <button onClick={handleLogout} className="absolute right-[calc(10%)]">Log out</button>
             </nav>
             <Outlet/>
         </div>

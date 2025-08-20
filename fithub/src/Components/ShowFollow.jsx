@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { db, auth } from "../client.js";
 import {
   doc,
@@ -108,12 +109,12 @@ const ShowFollow = ({ isOpen, onClose, list, currUser }) => {
                 <div className="container">
                     {list === "followers" ? followersDetails.map((user) => 
                         <div key={user.uid}>
-                            <h3>{user.name}</h3>
+                            <Link to={"../visit-prof/" + user.uid}>{user.name}</Link>
                             <button onClick={() => removeFollow(user.uid)}>Remove</button>
                         </div>) : 
                         followingDetails.map((user) => 
                         <div key={user.uid}>
-                            <h3>{user.name}</h3>
+                            <Link to={"../visit-prof/" + user.uid}>{user.name}</Link>
                             <button onClick={() => removeFollow(user.uid)}>Unfollow</button>
                         </div>)
                     }

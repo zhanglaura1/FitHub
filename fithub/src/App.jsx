@@ -83,42 +83,49 @@ function App() {
   }, [tags, searchInput, posts, sort])
 
   return (
-    <div>
-      <h1>Welcome to Fithub</h1>
-      <div className="filters_sort">
+    <div className="">
+      <h1 className="text-black text-center text-4xl m-10">Welcome to Fithub</h1>
+      <div className="flex flex-wrap gap-x-10 gap-y-10 justify-center align-center mb-10">
         <input
           type="text"
           placeholder="Search..."
           onChange={(e) => setSearchInput(e.target.value)}
+          className="h-10 w-100 border-1 border-#ccc bg-white rounded-4xl pl-5"
         />
-        <label htmlFor="tag_filter">Filter: </label>
-        <select name="tag_filter" id="tag_filter" multiple onChange={(input => setTags(Array.from(input.target.options).filter(option => option.selected).map(option => option.value)))}>
-          <option value="show-all" default>Show All</option>
-          <option value="streetwear">Streetwear</option>
-          <option value="y2k">Y2K</option>
-          <option value="vintage">Vintage</option>
-          <option value="cottagecore">Cottagecore</option>
-          <option value="emo">Emo</option>
-          <option value="coquette">Coquette</option>
-          <option value="indie">Indie</option>
-          <option value="minimalist">Minimalist</option>
-          <option value="granola">Granola</option>
-          <option value="monochrome">Monochrome</option>
-          <option value="chic">Chic</option>
-          <option value="basic">Basic</option>
-          <option value="academia">Academia</option>
-          <option value="formal">Formal</option>
-          <option value="business-cas">Business Casual</option>
-          <option value="western">Western</option>
-          <option value="coastal">Coastal</option>
-        </select>
-        <label htmlFor="sort">Sort by: </label>
-        <select name="sort" id="sort" value={sort} onChange={(input => setSort(input.target.value))}>
-          <option value="recent" default>Most Recent</option>
-          <option value="likes">Likes</option>
-        </select>
+        <div className="flex gap-x-3">
+          <label htmlFor="tag_filter">Filter: </label>
+          <select name="tag_filter" id="tag_filter" multiple onChange={(input => setTags(Array.from(input.target.options).filter(option => option.selected).map(option => option.value)))}
+            className="h-10 w-40 border-1 border-#ccc bg-white rounded-sm pl-1">
+            <option value="show-all" default>Show All</option>
+            <option value="streetwear">Streetwear</option>
+            <option value="y2k">Y2K</option>
+            <option value="vintage">Vintage</option>
+            <option value="cottagecore">Cottagecore</option>
+            <option value="emo">Emo</option>
+            <option value="coquette">Coquette</option>
+            <option value="indie">Indie</option>
+            <option value="minimalist">Minimalist</option>
+            <option value="granola">Granola</option>
+            <option value="monochrome">Monochrome</option>
+            <option value="chic">Chic</option>
+            <option value="basic">Basic</option>
+            <option value="academia">Academia</option>
+            <option value="formal">Formal</option>
+            <option value="business-cas">Business Casual</option>
+            <option value="western">Western</option>
+            <option value="coastal">Coastal</option>
+          </select>
+        </div>
+        <div className="flex gap-x-3">
+          <label htmlFor="sort">Sort by: </label>
+          <select name="sort" id="sort" value={sort} onChange={(input => setSort(input.target.value))}
+            className="h-8 w-40 border-1 border-#ccc bg-white rounded-sm pl-1">
+            <option value="recent" default>Most Recent</option>
+            <option value="likes">Likes</option>
+          </select>
+        </div>
       </div>
-      <div className="posts-container">
+      <div className="grid grid-flow-col grid-cols-3 gap-4">
         {filteredResults.length > 0 > 0 ? 
             (filteredResults.map((data) => (
             <Post

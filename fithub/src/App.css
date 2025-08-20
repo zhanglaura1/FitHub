@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+@theme {
+  --color-background: #f9f9f9;
+  --color-text: #333;
+}
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -7,60 +12,11 @@
   text-align: center;
 }
 
-/* General Reset & Base */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
 body {
   background-color: #f9f9f9;
   color: #333;
   padding: 1rem;
   line-height: 1.5;
-}
-
-nav {
-  display: flex;
-  gap: 10px;
-}
-
-/* Heading */
-h1 {
-  text-align: center;
-  font-size: 2.5rem;
-  margin: 2rem 0;
-  color: #111;
-}
-
-/* Filter and Sort UI */
-.filters_sort {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 2rem;
-}
-
-.filters_sort input[type="text"],
-.filters_sort select {
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 0.5rem;
-  background-color: white;
-  min-width: 200px;
-}
-
-/* Posts Grid */
-.posts-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 2rem;
-  padding: 1rem;
 }
 
 /* Post Card */
