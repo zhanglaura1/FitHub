@@ -31,7 +31,7 @@ const Post = (props) => {
     };
 
     return (
-        <div className='flex flex-col gap-y-2 align-center bg-white rounded-md shadow-lg p-3 transition duration-200 ease-in-out hover:-translate-y-3'>
+        <div className='flex flex-col gap-y-2 align-center bg-white rounded-md shadow-lg px-6 py-3 transition duration-200 ease-in-out hover:-translate-y-3'>
             <Link to={"/visit-prof/" + props.userId}>@{user_name}</Link>
             <Link to={"../detail/" + props.id}>{imgUrl ? <img src={imgUrl} alt="fit photo" className="w-full max-h-[400px] rounded-md object-cover"/> : null}</Link>
             <div className="flex justify-between">
