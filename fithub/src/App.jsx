@@ -90,12 +90,12 @@ function App() {
           type="text"
           placeholder="Search..."
           onChange={(e) => setSearchInput(e.target.value)}
-          className="h-10 w-100 border-1 border-#ccc bg-white rounded-4xl pl-5"
+          className="h-10 w-100 border-1 border-text bg-white rounded-4xl pl-5"
         />
         <div className="flex gap-x-3">
           <label htmlFor="tag_filter">Filter: </label>
           <select name="tag_filter" id="tag_filter" multiple onChange={(input => setTags(Array.from(input.target.options).filter(option => option.selected).map(option => option.value)))}
-            className="h-10 w-40 border-1 border-#ccc bg-white rounded-sm pl-1">
+            className="h-10 w-40 border-1 border-text bg-white rounded-sm pl-1">
             <option value="show-all" default>Show All</option>
             <option value="streetwear">Streetwear</option>
             <option value="y2k">Y2K</option>
@@ -119,13 +119,13 @@ function App() {
         <div className="flex gap-x-3">
           <label htmlFor="sort">Sort by: </label>
           <select name="sort" id="sort" value={sort} onChange={(input => setSort(input.target.value))}
-            className="h-8 w-40 border-1 border-#ccc bg-white rounded-sm pl-1">
+            className="h-8 w-40 border-1 border-text bg-white rounded-sm pl-1">
             <option value="recent" default>Most Recent</option>
             <option value="likes">Likes</option>
           </select>
         </div>
       </div>
-      <div className="grid grid-flow-col grid-cols-3 gap-4">
+      <div className="grid grid-flow-col grid-cols-3 gap-6">
         {filteredResults.length > 0 > 0 ? 
             (filteredResults.map((data) => (
             <Post

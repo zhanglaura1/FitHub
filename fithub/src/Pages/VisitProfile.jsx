@@ -92,7 +92,7 @@ const VisitProfile = () => {
                 <h3>Followers: {user?.followers?.length}</h3>
             </div>
             {userId === auth.currentUser.uid ? null : <button className="follow" onClick={handleFollow}>Follow</button>}
-            <div className="grid grid-flow-col grid-cols-3 gap-4">
+            <div className="grid grid-flow-col grid-cols-3 gap-6">
                 {posts?.length > 0 ? 
                     [...posts]
                     .map((data) => 

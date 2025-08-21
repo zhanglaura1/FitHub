@@ -31,16 +31,16 @@ const Post = (props) => {
     };
 
     return (
-        <div className='post-card'>
+        <div className='flex flex-col gap-y-2 align-center bg-white rounded-md shadow-lg p-3 transition duration-200 ease-in-out hover:-translate-y-3'>
             <Link to={"/visit-prof/" + props.userId}>@{user_name}</Link>
-            <Link to={"../detail/" + props.id}>{imgUrl ? <img src={imgUrl} alt="fit photo"/> : null}</Link>
-            <div className="footer">
-                <h4>{props.created_at?.toLocaleString()}</h4>
-                <div className="likes">
+            <Link to={"../detail/" + props.id}>{imgUrl ? <img src={imgUrl} alt="fit photo" className="w-full max-h-[400px] rounded-md object-cover"/> : null}</Link>
+            <div className="flex justify-between">
+                <h4 className="text-sm">{props.created_at?.toLocaleString()}</h4>
+                <div className="flex gap-x-1">
                     {props.likes?.includes(auth.currentUser.uid) ? 
-                        <button className="liked-btn" onClick={handleLike}>♥</button> : 
-                        <button className="unliked-btn" onClick={handleLike}>♡</button> }
-                    <h4>{props.likes?.length || 0}</h4>
+                        <button className="bg-none border-none cursor-pointer text-xl h-0 text-red-600 transition duration-200 ease-in-out hover:scale-120" onClick={handleLike}>♥</button> : 
+                        <button className="bg-none border-none cursor-pointer text-xl h-0 transition duration-200 ease-in-out hover:scale-120" onClick={handleLike}>♡</button> }
+                    <h4 className="pt-0.5">{props.likes?.length || 0}</h4>
                 </div>
             </div>
         </div>

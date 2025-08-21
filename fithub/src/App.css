@@ -19,39 +19,6 @@ body {
   line-height: 1.5;
 }
 
-/* Post Card */
-.post-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: white;
-  border-radius: 1rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  padding: 1rem;
-  transition: transform 0.2s ease;
-}
-
-.post-card:hover {
-  transform: translateY(-5px);
-}
-
-.post-card img {
-  width: 100%;
-  max-height: 300px;
-  object-fit: cover;
-  border-radius: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-.post-card h4 {
-  margin: 0.5rem 0;
-  font-weight: 600;
-}
-
-.post-card p {
-  margin: 0.5rem 0;
-}
-
 /* Tags */
 .post-card .tags {
   display: flex;
@@ -105,32 +72,6 @@ body {
 
 .makeComment button:hover {
   background-color: #555;
-}
-
-/* Like Button */
-.liked-btn {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: #e74c3c;
-  transition: transform 0.1s ease;
-}
-
-.liked-btn:hover {
-  transform: scale(1.2);
-}
-
-.unliked-btn {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  transition: transform 0.1s ease;
-}
-
-.unliked-btn:hover {
-  transform: scale(1.2);
 }
 
 .saved-btn:hover {

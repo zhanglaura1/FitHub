@@ -57,7 +57,12 @@ const ReadPost = () => {
     }, [showSaved])
 
     useEffect(() => {
-      if (!auth.currentUser || !showSaved || !user.saved?.length) return;
+      if (!auth.currentUser || !showSaved) return;
+      if (!user.saved?.length) {
+        setPosts([]); 
+        return;
+      }
+      
       const q = query(
         collection(db, "Posts"),
         where("__name__", "in", user.saved.slice(0,10))
@@ -83,7 +88,7 @@ const ReadPost = () => {
         <ShowFollow isOpen={!!modalList} onClose={() => setModalList(null)} list={modalList} currUser={user.name}/>
         <button onClick={() => setShowSaved(false)}>My posts</button>
         <button onClick={() => setShowSaved(true)}>Saved</button>
-        <div className="grid grid-flow-col grid-cols-3 gap-4">
+        <div className="grid grid-flow-col grid-cols-3 gap-6">
             {posts?.length > 0 ? 
                 [...posts]
                 .map((data) => 
