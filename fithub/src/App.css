@@ -19,69 +19,6 @@ body {
   line-height: 1.5;
 }
 
-/* Tags */
-.post-card .tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-}
-
-.tag {
-  background-color: #e5e5e5;
-  padding: 0.3rem 0.7rem;
-  border-radius: 999px;
-  font-size: 0.8rem;
-}
-
-/* Comments */
-.comments {
-  margin-top: 2rem;
-  background: #fff;
-  padding: 1rem;
-  border-radius: 1rem;
-  box-shadow: 0 0 10px rgba(0,0,0,0.05);
-}
-
-.comments h4 {
-  margin-bottom: 0.5rem;
-}
-
-.makeComment {
-  display: flex;
-  gap: 0.5rem;
-  margin-top: 1rem;
-}
-
-.makeComment input {
-  flex: 1;
-  padding: 0.6rem;
-  border-radius: 0.5rem;
-  border: 1px solid #ccc;
-}
-
-.makeComment button {
-  padding: 0.6rem 1rem;
-  background-color: #333;
-  color: white;
-  border: none;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.makeComment button:hover {
-  background-color: #555;
-}
-
-.saved-btn:hover {
-  transform: scale(1.2);
-}
-
-.unsaved-btn:hover {
-  transform: scale(1.2);
-}
-
 .follow {
   background-color: rgb(217, 229, 239);
   padding: 5px 15px;
@@ -90,10 +27,6 @@ body {
 
 .follow:hover {
   background-color: rgb(176, 197, 216);
-  cursor: pointer;
-}
-
-button:hover {
   cursor: pointer;
 }
 

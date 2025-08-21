@@ -83,7 +83,7 @@ function App() {
   }, [tags, searchInput, posts, sort])
 
   return (
-    <div className="">
+    <div>
       <h1 className="text-black text-center text-4xl m-10">Welcome to Fithub</h1>
       <div className="flex flex-wrap gap-x-10 gap-y-10 justify-center align-center mb-10">
         <input

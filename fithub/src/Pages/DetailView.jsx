@@ -95,53 +95,57 @@ const DetailView = () => {
     if (!post) return <p>Loading...</p>;
 
     return (
-        <div>
-            <div className="post-card">
-                <div className="header">
+        <div className="justify-self-center">
+            <div className="flex flex-col justify-center max-w-2xl mt-10 bg-white py-5 px-10 gap-y-5 rounded-3xl shadow-sm">
+                <div className="flex justify-between">
                     <Link to={"/visit-prof/" + post.userId}>@{user_name}</Link>
                     {auth.currentUser?.uid === post.userId ? 
-                        <Link to={"/edit/" + id}>...</Link> : null}
+                        <Link className="font-bold" to={"/edit/" + id}>...</Link> : null}
                 </div>
-                {post.img && <img src={post.img} alt="Post" style={{ width: "300px" }} />}
-                <p>{post.description}</p>
-                <div className="footer">
-                    <h4>{post.created_at?.toDate().toLocaleString()}</h4>
-                    <div className="likes">
-                        {post.likes?.includes(auth.currentUser.uid) ? 
-                            <button className="liked-btn" onClick={handleLike}>♥</button> : 
-                            <button className="unliked-btn" onClick={handleLike}>♡</button> }
-                        <h4>{post.likes?.length}</h4>
-                    </div>
-                    <div className="save">
-                        {curr_user?.saved?.includes(id) ? 
-                            <button className="saved-btn" onClick={handleSave}><svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
-                                </svg>
-                            </button> : 
-                            <button className="unsaved-btn" onClick={handleSave}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
-                                </svg>
-                            </button> }
+                {post.img && <img className="mx-auto rounded-xl" src={post.img} alt="Post" style={{ width: "300px" }} />}
+                <p className="text-left">{post.description}</p>
+                <div className="flex justify-between">
+                    <h4 className="text-sm">{post.created_at?.toDate().toLocaleString()}</h4>
+                    <div className="flex gap-x-3">
+                        <div className="flex gap-x-1">
+                            {post.likes?.includes(auth.currentUser.uid) ? 
+                                <button className="bg-none border-none cursor-pointer text-2xl h-0 text-red-600 transition duration-200 ease-in-out hover:scale-120" onClick={handleLike}>♥</button> : 
+                                <button className="bg-none border-none font-light cursor-pointer h-0 text-2xl h-0 transition duration-200 ease-in-out hover:scale-120" onClick={handleLike}>♡</button> }
+                            <h4>{post.likes?.length}</h4>
+                        </div>
+                        <div>
+                            {curr_user?.saved?.includes(id) ? 
+                                <button className="h-4 cursor-pointer transition duration-200 ease-in-out hover:scale-120" onClick={handleSave}><svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
+                                    </svg>
+                                </button> : 
+                                <button className="h-4 cursor-pointer transition duration-200 ease-in-out hover:scale-120" onClick={handleSave}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
+                                    </svg>
+                                </button> }
+                        </div>
                     </div>
                 </div>
-                <div className="tags">
+                <div className="flex gap-x-2 flex-wrap">
                     {post.tags.map((tag) => (
-                        <h6 key={tag} id={tag} className="tag">{tag}</h6>
+                        <h6 key={tag} id={tag} className="bg-gray-200 px-4 py-1 rounded-2xl ">{tag}</h6>
                     ))}
                 </div>
             </div>
-            <div className="comments">
+            <div className="bg-white mt-5 rounded-2xl py-5 px-8 shadow-sm">
                 {comments ? comments
                     .map((comment) => (
-                    <div className="comment">
-                        <h4 className="comment-user">@{comment.userName}</h4>
-                        <h4>{comment.created_at?.toDate().toLocaleString()}</h4>
+                    <div className="mb-4 text-left">
+                        <div className="flex justify-between ">
+                            <h4 className="text-sm">@{comment.userName}</h4>
+                            <h4 className="text-xs">{comment.created_at?.toDate().toLocaleString()}</h4>
+                        </div>
                         <h4>{comment.text}</h4>
                     </div>
                 )) : null}
-                <div className="makeComment">
-                    <input type="text" name="comment" placeholder="Add a comment" value={newComment} onChange={(e) => setNewComment(e.target.value)}/>
-                    <button onClick={handleAddComment}>Send</button>
+                <div className="flex justify-between gap-x-4 mt-5">
+                    <input className="h-10 w-[calc(80%)] border-1 border-gray-500 bg-white rounded-xl pl-3" type="text" name="comment" placeholder="Add a comment" value={newComment} onChange={(e) => setNewComment(e.target.value)}/>
+                    <button className="bg-text text-white px-5 py-2 rounded-lg cursor-pointer transition duration-200 ease-in-out hover:bg-zinc-500" onClick={handleAddComment}>Send</button>
                 </div>
             </div>
         </div>
