@@ -28,9 +28,13 @@ const ConfirmDelete = ({ isOpen, onClose, deletePost }) => {
     return (
         <div>
             <dialog ref={dialogRef} onCancel={handleClose}>
-                <p>Are you sure you want to delete this post?</p>
-                <button className="delete" onClick={handleDelete}>Delete</button>
-                <button className="cancel" onClick={handleClose}>Cancel</button>
+                <div className="rounded-xl p-6 w-screen h-[100px] backdrop:bg-black/50 flex flex-col">
+                    <p>Are you sure you want to delete this post?</p>
+                    <div className="flex justify-center gap-x-5 mt-3">
+                        <button className="cursor-pointer text-text" onClick={handleClose}>Cancel</button>
+                        <button className="cursor-pointer text-red-700" onClick={handleDelete}>Delete</button>
+                    </div>
+                </div>
             </dialog>
         </div>
     )

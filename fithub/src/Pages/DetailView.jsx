@@ -145,7 +145,7 @@ const DetailView = () => {
                 )) : null}
                 <div className="flex justify-between gap-x-4 mt-5">
                     <input className="h-10 w-[calc(80%)] border-1 border-gray-500 bg-white rounded-xl pl-3" type="text" name="comment" placeholder="Add a comment" value={newComment} onChange={(e) => setNewComment(e.target.value)}/>
-                    <button className="bg-text text-white px-5 py-2 rounded-lg cursor-pointer transition duration-200 ease-in-out hover:bg-zinc-500" onClick={handleAddComment}>Send</button>
+                    <button className="bg-text text-white px-5 py-2 rounded-lg cursor-pointer transition duration-200 ease-in-out hover:bg-zinc-600" onClick={handleAddComment}>Send</button>
                 </div>
             </div>
         </div>

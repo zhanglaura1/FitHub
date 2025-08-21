@@ -20,7 +20,7 @@ function Layout() {
                 <Link to="/">Feed</Link>
                 <Link to="/profile">Profile</Link>
                 <Link to="/new">New Post</Link>
-                <button onClick={handleLogout} className="absolute right-[calc(10%)]">Log out</button>
+                <button onClick={handleLogout} className="absolute right-[calc(10%)] cursor-pointer">Log out</button>
             </nav>
             <Outlet/>
         </div>

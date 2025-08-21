@@ -82,12 +82,18 @@ const ReadPost = () => {
 
     return (
       <div>
-        <h2>@{user?.name}</h2>
-        <button onClick={() => setModalList("following")}>Following: {user.following?.length}</button>
-        <button onClick={() => setModalList("followers")}>Followers: {user.followers?.length}</button>
-        <ShowFollow isOpen={!!modalList} onClose={() => setModalList(null)} list={modalList} currUser={user.name}/>
-        <button onClick={() => setShowSaved(false)}>My posts</button>
-        <button onClick={() => setShowSaved(true)}>Saved</button>
+        <div className="justify-self-center">
+          <h2 className="mt-10 mb-5 text-xl">@{user?.name}</h2>
+          <div className="flex gap-10 mb-3 justify-center">
+            <button className="cursor-pointer" onClick={() => setModalList("following")}>Following: {user.following?.length}</button>
+            <button className="cursor-pointer" onClick={() => setModalList("followers")}>Followers: {user.followers?.length}</button>
+          </div>
+          <ShowFollow isOpen={!!modalList} onClose={() => setModalList(null)} list={modalList} currUser={user.name}/>
+          <div className="flex gap-10 mb-8 justify-center">
+            <button className="cursor-pointer" onClick={() => setShowSaved(false)}>My posts</button>
+            <button className="cursor-pointer" onClick={() => setShowSaved(true)}>Saved</button>
+          </div>
+        </div>
         <div className="grid grid-flow-col grid-cols-3 gap-6">
             {posts?.length > 0 ? 
                 [...posts]

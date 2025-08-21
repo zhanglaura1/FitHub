@@ -77,12 +77,7 @@ const ShowFollow = ({ isOpen, onClose, list, currUser }) => {
         fetchFollowing();
     }, [following]);
 
-    const handleClose = () => {
-        if (dialogRef.current) {
-            dialogRef.current.close();
-        }
-        onClose();
-    }
+    const handleClose = () => onClose();
 
     const removeFollow = async (user) => {
         const userRef = doc(db, "Users", user);
@@ -98,26 +93,28 @@ const ShowFollow = ({ isOpen, onClose, list, currUser }) => {
 
     return (
         <div>
-            <dialog ref={dialogRef} onCancel={handleClose}>
-                <div className="header">{list === "followers" ? 
-                    <h2>Followers</h2> : <h2>Following</h2>}
-                    <button onClick={handleClose}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                    </svg>
-                    </button>
-                </div>
-                <div className="container">
-                    {list === "followers" ? followersDetails.map((user) => 
-                        <div key={user.uid}>
-                            <Link to={"../visit-prof/" + user.uid}>{user.name}</Link>
-                            <button onClick={() => removeFollow(user.uid)}>Remove</button>
-                        </div>) : 
-                        followingDetails.map((user) => 
-                        <div key={user.uid}>
-                            <Link to={"../visit-prof/" + user.uid}>{user.name}</Link>
-                            <button onClick={() => removeFollow(user.uid)}>Unfollow</button>
-                        </div>)
-                    }
+            <dialog ref={dialogRef} onCancel={handleClose} onClose={handleClose}>
+                <div className="rounded-xl p-6 w-screen h-[200px] max-h-[90%] backdrop:bg-black/50 flex flex-col">
+                    <div className="flex justify-between px-10 py-5">{list === "followers" ? 
+                        <h2 className="text-lg">Followers</h2> : <h2 className="text-lg">Following</h2>}
+                        <button className="cursor-pointer" onClick={handleClose}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div>
+                        {list === "followers" ? followersDetails.map((user) => 
+                            <div className="flex justify-between mb-3 px-10 py-5" key={user.uid}>
+                                <Link className="cursor-pointer" to={"../visit-prof/" + user.uid}>{user.name}</Link>
+                                <button className="text-red-700 cursor-pointer" onClick={() => removeFollow(user.uid)}>Remove</button>
+                            </div>) : 
+                            followingDetails.map((user) => 
+                            <div className="flex justify-between mb-3 px-10 py-5" key={user.uid}>
+                                <Link className="cursor-pointer" to={"../visit-prof/" + user.uid}>{user.name}</Link>
+                                <button className="text-red-700 cursor-pointer" onClick={() => removeFollow(user.uid)}>Unfollow</button>
+                            </div>)
+                        }
+                    </div>
                 </div>
             </dialog>
         </div>

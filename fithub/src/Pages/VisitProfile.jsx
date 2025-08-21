@@ -86,12 +86,14 @@ const VisitProfile = () => {
 
     return (
         <div>
-            <div className="header">
-                <h2>@{user?.name}</h2>
-                <h3>Following: {user?.following?.length}</h3>
-                <h3>Followers: {user?.followers?.length}</h3>
+            <div className="justify-self-center mb-6">
+                <h2 className="mt-10 mb-5 text-xl">@{user?.name}</h2>
+                <div className="flex gap-10 mb-3 justify-center">
+                  <h3>Following: {user?.following?.length}</h3>
+                  <h3>Followers: {user?.followers?.length}</h3>
+                </div>
             </div>
-            {userId === auth.currentUser.uid ? null : <button className="follow" onClick={handleFollow}>Follow</button>}
+            {userId === auth.currentUser.uid ? null : <button className="bg-text text-white px-5 py-2 mb-8 rounded-lg cursor-pointer transition duration-200 ease-in-out hover:bg-zinc-600" onClick={handleFollow}>Follow</button>}
             <div className="grid grid-flow-col grid-cols-3 gap-6">
                 {posts?.length > 0 ? 
                     [...posts]
