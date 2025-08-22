@@ -94,7 +94,7 @@ const VisitProfile = () => {
                 </div>
             </div>
             {userId === auth.currentUser.uid ? null : <button className="bg-text text-white px-5 py-2 mb-8 rounded-lg cursor-pointer transition duration-200 ease-in-out hover:bg-zinc-600" onClick={handleFollow}>Follow</button>}
-            <div className="grid grid-flow-col grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {posts?.length > 0 ? 
                     [...posts]
                     .map((data) => 

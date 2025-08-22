@@ -125,7 +125,7 @@ function App() {
           </select>
         </div>
       </div>
-      <div className="pt-10 grid grid-flow-col grid-cols-3 gap-6">
+      <div className="pt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredResults.length > 0 > 0 ? 
             (filteredResults.map((data) => (
             <Post
