@@ -104,12 +104,12 @@ const ShowFollow = ({ isOpen, onClose, list, currUser }) => {
                     </div>
                     <div>
                         {list === "followers" ? followersDetails.map((user) => 
-                            <div className="flex justify-between mb-3 px-10 py-5" key={user.uid}>
+                            <div className="flex justify-between mb-2 px-10" key={user.uid}>
                                 <Link className="cursor-pointer" to={"../visit-prof/" + user.uid}>{user.name}</Link>
                                 <button className="text-red-700 cursor-pointer" onClick={() => removeFollow(user.uid)}>Remove</button>
                             </div>) : 
                             followingDetails.map((user) => 
-                            <div className="flex justify-between mb-3 px-10 py-5" key={user.uid}>
+                            <div className="flex justify-between mb-1 px-10" key={user.uid}>
                                 <Link className="cursor-pointer" to={"../visit-prof/" + user.uid}>{user.name}</Link>
                                 <button className="text-red-700 cursor-pointer" onClick={() => removeFollow(user.uid)}>Unfollow</button>
                             </div>)
