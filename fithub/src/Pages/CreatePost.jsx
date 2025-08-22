@@ -1,10 +1,12 @@
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { auth, db, storage } from "../client.js";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { useNavigate } from 'react-router-dom'
 import { useState } from 'react';
 
 const CreatePost = () => {
     const user = auth.currentUser;
+    const navigate = useNavigate();
     const [post, setPost] = useState({likes: [], description: "", tags: [], img: null});
 
     const handleChange = (event) => {
@@ -39,8 +41,7 @@ const CreatePost = () => {
             img: imageUrl,
             created_at: serverTimestamp()
         });
-
-        window.location = "/profile";
+        navigate("/profile");
     }
 
     return (

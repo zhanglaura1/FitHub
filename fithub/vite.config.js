@@ -12,11 +12,11 @@ export default defineConfig({
   },
   plugins: [react(), tailwindcss()],
   build: {
+    outDir: 'dist',
     rollupOptions: {
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom']
-          // Remove Firebase chunking temporarily
         }
       }
     }
