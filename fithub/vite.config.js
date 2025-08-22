@@ -11,6 +11,16 @@ export default defineConfig({
     },
   },
   plugins: [react(), tailwindcss()],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom']
+          // Remove Firebase chunking temporarily
+        }
+      }
+    }
+  },
   define: {
     global: 'globalThis',
   },
