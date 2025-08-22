@@ -11,4 +11,19 @@ export default defineConfig({
     },
   },
   plugins: [react(), tailwindcss()],
+  build: {
+    rollupOptions: {
+      // Don't externalize these modules
+      external: [],
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          firebase: ['firebase/app', 'firebase/auth', 'firebase/firestore']
+        }
+      }
+    }
+  },
+  define: {
+    global: 'globalThis',
+  },
 })
