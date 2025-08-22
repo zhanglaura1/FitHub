@@ -16,7 +16,7 @@ function Layout() {
 
     return (
         <div className="max-width-1280px">
-            <nav className="flex gap-x-10">
+            <nav className="fixed top-0 left-0 right-0 flex gap-x-10 bg-slate-100 pl-[calc(10%)] py-5 shadow">
                 <Link to="/">Feed</Link>
                 <Link to="/profile">Profile</Link>
                 <Link to="/new">New Post</Link>

@@ -95,8 +95,8 @@ const DetailView = () => {
     if (!post) return <p>Loading...</p>;
 
     return (
-        <div className="justify-self-center">
-            <div className="flex flex-col justify-center max-w-2xl mt-10 bg-white py-5 px-10 gap-y-5 rounded-3xl shadow-sm">
+        <div className="justify-self-center p-24">
+            <div className="flex flex-col justify-center min-w-lg max-w-2xl mt-10 bg-white py-5 px-10 gap-y-5 rounded-3xl shadow-sm">
                 <div className="flex justify-between">
                     <Link to={"/visit-prof/" + post.userId}>@{user_name}</Link>
                     {auth.currentUser?.uid === post.userId ? 

@@ -85,7 +85,7 @@ const VisitProfile = () => {
     };
 
     return (
-        <div>
+        <div className="p-24">
             <div className="justify-self-center mb-6">
                 <h2 className="mt-10 mb-5 text-xl">@{user?.name}</h2>
                 <div className="flex gap-10 mb-3 justify-center">

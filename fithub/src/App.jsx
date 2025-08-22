@@ -83,14 +83,14 @@ function App() {
   }, [tags, searchInput, posts, sort])
 
   return (
-    <div>
-      <h1 className="text-black text-center text-4xl m-10">Welcome to Fithub</h1>
+    <div className="p-24">
+      <h1 className="text-black text-center text-4xl m-10 pb-5">Welcome to Fithub</h1>
       <div className="flex flex-wrap gap-x-10 gap-y-10 justify-center align-center mb-10">
         <input
           type="text"
           placeholder="Search..."
           onChange={(e) => setSearchInput(e.target.value)}
-          className="h-10 w-100 border-1 border-text bg-white rounded-4xl pl-5"
+          className="h-10 w-100 border-1 border-slate-100 border-text bg-white rounded-xl pl-5"
         />
         <div className="flex gap-x-3">
           <label htmlFor="tag_filter">Filter: </label>
@@ -125,7 +125,7 @@ function App() {
           </select>
         </div>
       </div>
-      <div className="grid grid-flow-col grid-cols-3 gap-6">
+      <div className="pt-10 grid grid-flow-col grid-cols-3 gap-6">
         {filteredResults.length > 0 > 0 ? 
             (filteredResults.map((data) => (
             <Post

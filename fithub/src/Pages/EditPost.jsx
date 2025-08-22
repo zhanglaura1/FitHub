@@ -73,7 +73,7 @@ const EditPost = () => {
     }
 
     return (
-        <div className="flex flex-col items-center min-h-screen bg-gray-50 px-4">
+        <div className="flex flex-col items-center min-h-screen bg-gray-50 p-24">
             <h1 className="text-black text-center text-4xl m-10">Edit post</h1>
             <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-2xl">
                 <form onSubmit={updatePost} className="space-y-6">
